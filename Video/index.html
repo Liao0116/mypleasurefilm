@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vincent Liao — Video</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --text: #f2f2f2;
+    --muted: #8a8a8a;
+    --border: rgba(255,255,255,0.1);
+    --accent: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Helvetica Neue', Arial, 'Noto Sans TC', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .top {
+    display: flex; align-items: center;
+    padding: 1.8rem 10%;
+    border-bottom: 1px solid var(--border);
+  }
+  .top-logo { height: 22px; width: auto; display: block; }
+
+  .page { padding: 2.5rem 10% 6rem; }
+
+  .tabs {
+    display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+  .tab {
+    font-size: 0.78rem; letter-spacing: 0.12em;
+    padding: 0.45rem 1.1rem; border: 1px solid var(--border); border-radius: 2px;
+    background: none; color: var(--muted); cursor: pointer; transition: all 0.2s;
+  }
+  .tab:hover, .tab.active { background: var(--accent); border-color: var(--accent); color: #000; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.4rem 1.1rem;
+  }
+  @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 900px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) {
+    .top { padding: 1.8rem 3% 1.4rem; }
+    .page { padding: 1.8rem 3% 4rem; }
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  }
+
+  .card {
+    cursor: pointer; background: var(--surface);
+  }
+  .card.hidden { display: none; }
+  .card-thumb { position: relative; aspect-ratio: 16/9; overflow: hidden; background: var(--surface); }
+  .card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+  .card:hover .card-thumb img { transform: scale(1.05); }
+
+  .card-play {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.35);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .card:hover .card-play { opacity: 1; }
+  .card-play-circle {
+    width: 52px; height: 52px;
+    border: 2px solid #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 1rem; padding-left: 3px;
+  }
+
+  .card-info { padding: 3.3% 2%; }
+  .card-name { font-size: 0.88rem; letter-spacing: 0.03em; line-height: 1.4; text-indent: 0.5em; }
+
+  /* lightbox */
+  .lb {
+    display: none; position: fixed; inset: 0; z-index: 9000;
+    background: rgba(0,0,0,0.95);
+    align-items: center; justify-content: center;
+  }
+  .lb.open { display: flex; }
+  .lb-inner {
+    position: relative; width: min(1100px, 92vw); aspect-ratio: 16/9;
+  }
+  .lb-inner iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .lb-close {
+    position: fixed; top: 1.6rem; right: 2rem;
+    background: none; border: none; color: #eee;
+    cursor: pointer; font-size: 1.8rem; opacity: 0.6; transition: opacity 0.2s;
+  }
+  .lb-close:hover { opacity: 1; }
+</style>
+</head>
+<body>
+
+  <div class="top">
+    <a href="https://mypleasurefilm.com/"><img class="top-logo" src="images/mpfilm-logo-white.png" alt="MPFILM" /></a>
+  </div>
+
+  <div class="page">
+    <div class="tabs">
+      <button class="tab active" data-cat="all">全部</button>
+      <button class="tab" data-cat="ad">商業廣告製作</button>
+      <button class="tab" data-cat="exhibit">展覽活動紀錄</button>
+    </div>
+
+    <div class="grid" id="grid">
+      <div class="card" data-cat="ad" data-id="QOyJsaGZ4FQ">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/QOyJsaGZ4FQ/maxresdefault.jpg" alt="The Village Within" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">The Village Within</div>
+        </div>
+      </div>
+      <div class="card" data-cat="ad" data-id="XojkJNVVWh4">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/XojkJNVVWh4/maxresdefault.jpg" alt="台灣光纜通道計劃 FINAL" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">台灣光纜通道計劃 FINAL</div>
+        </div>
+      </div>
+      <div class="card" data-cat="ad" data-id="WNdIvi352DY">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/WNdIvi352DY/maxresdefault.jpg" alt="CM | DOTDOT BLACK   Ripples" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | DOTDOT BLACK   Ripples</div>
+        </div>
+      </div>
+      <div class="card" data-cat="ad" data-id="aGtHntQ9SuA">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/aGtHntQ9SuA/maxresdefault.jpg" alt="CM | DOTDOT BLACK" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | DOTDOT BLACK</div>
+        </div>
+      </div>
+      <div class="card" data-cat="ad" data-id="4yraTXqrCEw">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/4yraTXqrCEw/maxresdefault.jpg" alt="CM | 泓德能源 一度電的重量" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | 泓德能源 一度電的重量</div>
+        </div>
+      </div>
+      <div class="card" data-cat="ad" data-id="2h3_uscvmYQ">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/2h3_uscvmYQ/maxresdefault.jpg" alt="CM | 開箱吧眷村 TVC" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | 開箱吧眷村 TVC</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="j72amCm9nbQ">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/j72amCm9nbQ/maxresdefault.jpg" alt="CM | 2026  Taipei CYCLE RECAP" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | 2026  Taipei CYCLE RECAP</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="US-f0Db4iAY">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/US-f0Db4iAY/maxresdefault.jpg" alt="CM | 2026 Taispo Recap" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | 2026 Taispo Recap</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="rnV2rBXSNso">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/rnV2rBXSNso/maxresdefault.jpg" alt="CM | 2025 TAISPO" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | 2025 TAISPO</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="DfQrDF7YxmM">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/DfQrDF7YxmM/maxresdefault.jpg" alt="CM | FOOD TAIPEI FULL VERSION FINAL" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | FOOD TAIPEI FULL VERSION FINAL</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="xJuZFo1m9gY">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/xJuZFo1m9gY/maxresdefault.jpg" alt="CM | 2026 ENERGY TAIWAN" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | 2026 ENERGY TAIWAN</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="Db8c4AIHiho">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/Db8c4AIHiho/maxresdefault.jpg" alt="CM | Energy Taiwan Full Version" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | Energy Taiwan Full Version</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="LTZrTJrwbKs">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/LTZrTJrwbKs/maxresdefault.jpg" alt="CM | 360 MOBILITY FULL RECAP FINAL大檔" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | 360 MOBILITY FULL RECAP FINAL大檔</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="gtSZqyrTC_0">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/gtSZqyrTC_0/maxresdefault.jpg" alt="CM | food taipei highlight" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | food taipei highlight</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="bCheZLqTwPU">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/bCheZLqTwPU/maxresdefault.jpg" alt="CM | 2025 MEDICAL TAIWAN RECAP" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | 2025 MEDICAL TAIWAN RECAP</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="BU9xxas92Lk">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/BU9xxas92Lk/maxresdefault.jpg" alt="CM | TAISPO AFTER MOVIE" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">CM | TAISPO AFTER MOVIE</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="XwrdKZ1bkf4">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/XwrdKZ1bkf4/maxresdefault.jpg" alt="台灣專利站" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">台灣專利站</div>
+        </div>
+      </div>
+      <div class="card" data-cat="exhibit" data-id="cGHvSHUxi6o">
+        <div class="card-thumb">
+          <img src="https://img.youtube.com/vi/cGHvSHUxi6o/maxresdefault.jpg" alt="發明競賽區" loading="lazy" />
+          <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">發明競賽區</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lb" id="lb">
+    <button class="lb-close" id="lbClose">&times;</button>
+    <div class="lb-inner"><iframe id="lbIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+  </div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const cards = document.querySelectorAll('.card');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const cat = tab.dataset.cat;
+      cards.forEach(card => {
+        const show = cat === 'all' || card.dataset.cat === cat;
+        card.classList.toggle('hidden', !show);
+      });
+    });
+  });
+
+  const lb = document.getElementById('lb');
+  const lbIframe = document.getElementById('lbIframe');
+  function openLb(id) {
+    lbIframe.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLb() {
+    lb.classList.remove('open');
+    lbIframe.src = '';
+    document.body.style.overflow = '';
+  }
+  cards.forEach(card => {
+    card.addEventListener('click', () => openLb(card.dataset.id));
+  });
+  document.getElementById('lbClose').addEventListener('click', closeLb);
+  lb.addEventListener('click', (e) => { if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLb(); });
+</script>
+</body>
+</html>
