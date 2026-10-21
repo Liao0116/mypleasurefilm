@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vincent Liao — Photography</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --text: #f2f2f2;
+    --muted: #8a8a8a;
+    --border: rgba(255,255,255,0.1);
+    --accent: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Helvetica Neue', Arial, 'Noto Sans TC', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .top {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.8rem 10%;
+    border-bottom: 1px solid var(--border);
+  }
+  .top-logo { height: 22px; width: auto; display: block; }
+  .top-back {
+    font-size: 0.72rem; letter-spacing: 0.12em; color: var(--muted);
+    text-decoration: none;
+  }
+  .top-back:hover { color: var(--text); }
+
+  .page { padding: 2.5rem 10% 6rem; }
+
+  .g-header { margin-bottom: 2.2rem; }
+  .g-title {
+    font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+    font-weight: 300; letter-spacing: 0.06em; margin-bottom: 0.6rem;
+  }
+  .g-meta { display: flex; flex-wrap: wrap; gap: 0.5rem 0.9rem; align-items: center; margin-bottom: 0.4rem; }
+  .g-date { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.08em; }
+  .g-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .g-tag {
+    font-size: 0.7rem; letter-spacing: 0.1em;
+    color: var(--text); padding: 0.15rem 0.6rem;
+    border: 1px solid var(--border); border-radius: 2px;
+  }
+  .g-count { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.06em; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+    margin-top: 2rem;
+  }
+  @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) {
+    .top { padding: 1.8rem 3% 1.4rem; }
+    .page { padding: 1.8rem 3% 4rem; }
+  }
+
+  .shot { aspect-ratio: 3/2; overflow: hidden; background: #111; cursor: pointer; }
+  .shot img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .shot:hover img { transform: scale(1.03); }
+
+  /* lightbox */
+  .lb {
+    display: none; position: fixed; inset: 0; z-index: 9000;
+    background: rgba(0,0,0,0.97);
+    align-items: center; justify-content: center;
+  }
+  .lb.open { display: flex; }
+  .lb-inner {
+    position: relative; max-width: min(1300px, 94vw); max-height: 92vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lb-inner img { max-width: 100%; max-height: 92vh; display: block; }
+  .lb-close, .lb-prev, .lb-next {
+    position: fixed; background: none; border: none; color: #eee;
+    cursor: pointer; font-size: 1.6rem; opacity: 0.6; transition: opacity 0.2s;
+  }
+  .lb-close:hover, .lb-prev:hover, .lb-next:hover { opacity: 1; }
+  .lb-close { top: 1.6rem; right: 2rem; font-size: 1.8rem; }
+  .lb-prev { left: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 2.4rem; }
+  .lb-next { right: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 2.4rem; }
+  .lb-counter {
+    position: fixed; bottom: 1.6rem; left: 50%; transform: translateX(-50%);
+    font-size: 0.75rem; letter-spacing: 0.1em; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+  <div class="top">
+    <a href="https://mypleasurefilm.com/"><img class="top-logo" src="images/mpfilm-logo-white.png" alt="MPFILM" /></a>
+    <a class="top-back" href="index.html">← 返回作品集</a>
+  </div>
+
+  <div class="page">
+    <div class="g-header">
+      <h1 class="g-title" id="g-title"></h1>
+      <div class="g-meta">
+        <span class="g-date" id="g-date"></span>
+        <div class="g-tags" id="g-tags"></div>
+      </div>
+      <p class="g-count" id="g-count"></p>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="lb" id="lb">
+    <button class="lb-close" id="lbClose">&times;</button>
+    <button class="lb-prev" id="lbPrev">&#8249;</button>
+    <div class="lb-inner"><img id="lbImg" src="" alt="" /></div>
+    <button class="lb-next" id="lbNext">&#8250;</button>
+    <div class="lb-counter" id="lbCounter"></div>
+  </div>
+
+<script src="js/gallery-data.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  const slug = params.get('event') || '';
+  const event = GALLERY_DATA[slug];
+
+  let photoSrcs = [];
+
+  if (!event) {
+    document.getElementById('g-title').textContent = '找不到作品';
+  } else {
+    document.title = event.title + ' | Vincent Liao';
+    document.getElementById('g-title').textContent = event.title;
+    document.getElementById('g-date').textContent = event.date;
+
+    const tagsEl = document.getElementById('g-tags');
+    event.tags.forEach(tag => {
+      const span = document.createElement('span');
+      span.className = 'g-tag';
+      span.textContent = tag;
+      tagsEl.appendChild(span);
+    });
+
+    document.getElementById('g-count').textContent = event.photos.length + ' 張';
+
+    photoSrcs = event.photos.map(fn => `images/photo/gallery/${slug}/${fn}`);
+
+    const grid = document.getElementById('grid');
+    photoSrcs.forEach((src, i) => {
+      const div = document.createElement('div');
+      div.className = 'shot';
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = event.title;
+      img.loading = i < 8 ? 'eager' : 'lazy';
+      div.appendChild(img);
+      div.addEventListener('click', () => openLb(i));
+      grid.appendChild(div);
+    });
+  }
+
+  const lb = document.getElementById('lb');
+  const lbImg = document.getElementById('lbImg');
+  const lbCounter = document.getElementById('lbCounter');
+  let current = 0;
+
+  function openLb(index) {
+    current = index;
+    lbImg.src = photoSrcs[current];
+    lbCounter.textContent = (current + 1) + ' / ' + photoSrcs.length;
+    lb.classList.add('open');
+  }
+  function closeLb() { lb.classList.remove('open'); }
+  function show(delta) {
+    current = (current + delta + photoSrcs.length) % photoSrcs.length;
+    lbImg.src = photoSrcs[current];
+    lbCounter.textContent = (current + 1) + ' / ' + photoSrcs.length;
+  }
+
+  document.getElementById('lbClose').addEventListener('click', closeLb);
+  document.getElementById('lbPrev').addEventListener('click', () => show(-1));
+  document.getElementById('lbNext').addEventListener('click', () => show(1));
+  lb.addEventListener('click', (e) => { if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', (e) => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowLeft') show(-1);
+    if (e.key === 'ArrowRight') show(1);
+  });
+</script>
+</body>
+</html>
