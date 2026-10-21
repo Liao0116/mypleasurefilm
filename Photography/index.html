@@ -31,6 +31,29 @@
 
   .page { padding: 2.5rem 10% 6rem; }
 
+  .hero { margin-bottom: 3rem; }
+  .hero-title-en {
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    font-weight: 700; letter-spacing: -0.01em; line-height: 1.05;
+  }
+  .hero-title-zh {
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    font-weight: 700; letter-spacing: 0.04em; line-height: 1.15;
+    margin: 0.3rem 0 1.6rem;
+  }
+  .hero-desc-zh {
+    font-size: 1rem; line-height: 1.75; font-weight: 500;
+    max-width: 640px; margin-bottom: 1rem;
+  }
+  .hero-desc-en {
+    font-size: 0.8rem; line-height: 1.65; color: var(--muted);
+    max-width: 640px;
+  }
+  @media (max-width: 700px) {
+    .hero { margin-bottom: 2.2rem; }
+    .hero-title-zh { margin: 0.2rem 0 1.2rem; }
+  }
+
   .tabs {
     display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap;
     margin-bottom: 2.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1.2rem;
@@ -71,6 +94,13 @@
   </div>
 
   <div class="page">
+    <div class="hero">
+      <div class="hero-title-en">Photography</div>
+      <div class="hero-title-zh">平面影像紀錄</div>
+      <p class="hero-desc-zh">透過構圖、光線與觀看角度，捕捉人物、空間與瞬間的特質，留下乾淨、有質地且具有辨識度的影像。</p>
+      <p class="hero-desc-en">Visual Impressions<br>Through composition, light, and perspective, we capture the character of people, spaces, and moments—creating refined imagery with clarity, texture, and lasting presence.</p>
+    </div>
+
     <div class="tabs">
       <button class="tab active" data-cat="all">全部</button>
       <button class="tab" data-cat="activity">活動</button>
