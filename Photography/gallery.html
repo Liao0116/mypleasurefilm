@@ -49,7 +49,6 @@
     color: var(--text); padding: 0.15rem 0.6rem;
     border: 1px solid var(--border); border-radius: 2px;
   }
-  .g-count { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.06em; }
 
   .grid {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
@@ -86,10 +85,6 @@
   .lb-close { top: 1.6rem; right: 2rem; font-size: 1.8rem; }
   .lb-prev { left: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 2.4rem; }
   .lb-next { right: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 2.4rem; }
-  .lb-counter {
-    position: fixed; bottom: 1.6rem; left: 50%; transform: translateX(-50%);
-    font-size: 0.75rem; letter-spacing: 0.1em; color: var(--muted);
-  }
 </style>
 </head>
 <body>
@@ -106,7 +101,6 @@
         <span class="g-date" id="g-date"></span>
         <div class="g-tags" id="g-tags"></div>
       </div>
-      <p class="g-count" id="g-count"></p>
     </div>
 
     <div class="grid" id="grid"></div>
@@ -117,7 +111,6 @@
     <button class="lb-prev" id="lbPrev">&#8249;</button>
     <div class="lb-inner"><img id="lbImg" src="" alt="" /></div>
     <button class="lb-next" id="lbNext">&#8250;</button>
-    <div class="lb-counter" id="lbCounter"></div>
   </div>
 
 <script src="js/gallery-data.js"></script>
@@ -143,8 +136,6 @@
       tagsEl.appendChild(span);
     });
 
-    document.getElementById('g-count').textContent = event.photos.length + ' 張';
-
     photoSrcs = event.photos.map(fn => `images/photo/gallery/${slug}/${fn}`);
 
     const grid = document.getElementById('grid');
@@ -163,20 +154,17 @@
 
   const lb = document.getElementById('lb');
   const lbImg = document.getElementById('lbImg');
-  const lbCounter = document.getElementById('lbCounter');
   let current = 0;
 
   function openLb(index) {
     current = index;
     lbImg.src = photoSrcs[current];
-    lbCounter.textContent = (current + 1) + ' / ' + photoSrcs.length;
     lb.classList.add('open');
   }
   function closeLb() { lb.classList.remove('open'); }
   function show(delta) {
     current = (current + delta + photoSrcs.length) % photoSrcs.length;
     lbImg.src = photoSrcs[current];
-    lbCounter.textContent = (current + 1) + ' / ' + photoSrcs.length;
   }
 
   document.getElementById('lbClose').addEventListener('click', closeLb);
