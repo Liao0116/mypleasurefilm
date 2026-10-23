@@ -12,6 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = ROOT / "Video" / "index.html"
+HEADER = ROOT / "shared" / "site-header.html"
 
 PLAYLISTS = [
     {"id": "PLJlbT8Y-GAB4", "cat": "ad"},
@@ -57,6 +58,7 @@ def build_card(v):
 
 
 def build_html(videos):
+    header_html = HEADER.read_text(encoding="utf-8").rstrip()
     tabs_html = "\n".join(
         f'      <button class="tab{" active" if k == "all" else ""}" data-cat="{k}">{v}</button>'
         for k, v in CAT_LABELS.items()
@@ -87,12 +89,6 @@ def build_html(videos):
     -webkit-font-smoothing: antialiased;
   }}
 
-  .top {{
-    display: flex; align-items: center;
-    padding: 1.8rem 10%;
-    border-bottom: 1px solid var(--border);
-  }}
-  .top-logo {{ height: 22px; width: auto; display: block; }}
 
   .page {{ padding: 2.5rem 10% 6rem; }}
 
@@ -113,7 +109,6 @@ def build_html(videos):
   @media (max-width: 1100px) {{ .grid {{ grid-template-columns: repeat(3, 1fr); }} }}
   @media (max-width: 900px)  {{ .grid {{ grid-template-columns: repeat(2, 1fr); }} }}
   @media (max-width: 700px) {{
-    .top {{ padding: 1.8rem 3% 1.4rem; }}
     .page {{ padding: 1.8rem 3% 4rem; }}
     .grid {{ grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }}
   }}
@@ -160,12 +155,12 @@ def build_html(videos):
   }}
   .lb-close:hover {{ opacity: 1; }}
 </style>
+<link rel="stylesheet" href="../shared/site-header.css" />
+<script src="../shared/site-header.js" defer></script>
 </head>
 <body>
 
-  <div class="top">
-    <a href="https://mypleasurefilm.com/"><img class="top-logo" src="images/mpfilm-logo-white.png" alt="MPFILM" /></a>
-  </div>
+{header_html}
 
   <div class="page">
     <div class="tabs">

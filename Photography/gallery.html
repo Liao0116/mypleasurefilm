@@ -22,17 +22,12 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  .top {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 1.8rem 10%;
-    border-bottom: 1px solid var(--border);
-  }
-  .top-logo { height: 22px; width: auto; display: block; }
-  .top-back {
+  .gallery-back {
+    display: inline-block; margin-bottom: 1.5rem;
     font-size: 0.72rem; letter-spacing: 0.12em; color: var(--muted);
     text-decoration: none;
   }
-  .top-back:hover { color: var(--text); }
+  .gallery-back:hover { color: var(--text); }
 
   .page { padding: 2.5rem 10% 6rem; }
 
@@ -57,7 +52,6 @@
   @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 700px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 700px) {
-    .top { padding: 1.8rem 3% 1.4rem; }
     .page { padding: 1.8rem 3% 4rem; }
   }
 
@@ -86,15 +80,28 @@
   .lb-prev { left: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 2.4rem; }
   .lb-next { right: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 2.4rem; }
 </style>
+<link rel="stylesheet" href="../shared/site-header.css" />
+<script src="../shared/site-header.js" defer></script>
 </head>
 <body>
 
-  <div class="top">
-    <a href="https://mypleasurefilm.com/"><img class="top-logo" src="images/mpfilm-logo-white.png" alt="MPFILM" /></a>
-    <a class="top-back" href="index.html">← 返回作品集</a>
-  </div>
+  <header class="site-header">
+    <a class="site-brand" href="https://mypleasurefilm.com/" aria-label="My Pleasure Film 首頁">
+      <img src="images/mpfilm-logo-white.png" width="98" height="18" alt="MPFILM" />
+    </a>
+    <button class="site-menu-toggle" type="button" aria-label="開啟主選單" aria-expanded="false" aria-controls="site-navigation" hidden>
+      <span></span><span></span>
+    </button>
+    <nav class="site-navigation" id="site-navigation" aria-label="主導覽">
+      <a class="site-nav-link" href="https://mypleasurefilm.com/about"><span class="site-nav-label">About</span><span class="site-nav-number" aria-hidden="true">01</span></a>
+      <a class="site-nav-link" href="https://mypleasurefilm.com/work/video" aria-current="location"><span class="site-nav-label">Work</span><span class="site-nav-number" aria-hidden="true">02</span></a>
+      <a class="site-nav-link" href="https://mypleasurefilm.com/process"><span class="site-nav-label">Process</span><span class="site-nav-number" aria-hidden="true">03</span></a>
+      <a class="site-nav-link" href="https://mypleasurefilm.com/contact"><span class="site-nav-label">Contact</span><span class="site-nav-number" aria-hidden="true">04</span></a>
+    </nav>
+  </header>
 
   <div class="page">
+    <a class="gallery-back" href="index.html">← 返回作品集</a>
     <div class="g-header">
       <h1 class="g-title" id="g-title"></h1>
       <div class="g-meta">
