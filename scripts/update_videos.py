@@ -138,22 +138,33 @@ def build_html(videos):
   .card-info {{ padding: 3.3% 2%; }}
   .card-name {{ font-size: 0.88rem; letter-spacing: 0.03em; line-height: 1.4; text-indent: 0.5em; }}
 
-  /* lightbox */
+  /* Keep exit controls in their own row, outside the YouTube frame. */
   .lb {{
     display: none; position: fixed; inset: 0; z-index: 9000;
     background: #000;
   }}
-  .lb.open {{ display: block; }}
+  .lb.open {{ display: flex; flex-direction: column; }}
+  .lb-toolbar {{
+    position: relative; z-index: 1; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: flex-end;
+    min-height: 64px;
+    padding: max(10px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left));
+    background: #111; border-bottom: 1px solid var(--border);
+  }}
   .lb-inner {{
-    position: absolute; inset: 0;
+    position: relative; flex: 1 1 0; min-height: 0; width: 100%;
   }}
   .lb-inner iframe {{ width: 100%; height: 100%; border: 0; display: block; }}
   .lb-close {{
-    position: fixed; top: 1.6rem; right: 2rem;
-    background: none; border: none; color: #eee;
-    cursor: pointer; font-size: 1.8rem; opacity: 0.6; transition: opacity 0.2s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-width: 96px; min-height: 44px; padding: 6px 16px;
+    border: 1px solid #fff; border-radius: 4px;
+    background: #f2f2f2; color: #111;
+    font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
   }}
-  .lb-close:hover {{ opacity: 1; }}
+  .lb-close-icon {{ font-size: 28px; font-weight: 400; line-height: 1; }}
+  .lb-close:hover {{ background: #fff; }}
+  .lb-close:focus-visible {{ outline: 2px solid #fff; outline-offset: 4px; }}
 </style>
 <link rel="stylesheet" href="../shared/site-header.css" />
 <script src="../shared/site-header.js" defer></script>
@@ -173,8 +184,10 @@ def build_html(videos):
   </div>
 
   <div class="lb" id="lb">
-    <button class="lb-close" id="lbClose">&times;</button>
-    <div class="lb-inner"><iframe id="lbIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+    <div class="lb-toolbar">
+      <button class="lb-close" id="lbClose" type="button" aria-label="關閉影片，返回作品列表"><span class="lb-close-icon" aria-hidden="true">&times;</span><span>關閉</span></button>
+    </div>
+    <div class="lb-inner"><iframe id="lbIframe" src="" title="YouTube 影片播放器" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
   </div>
 
 <script>
@@ -194,20 +207,28 @@ def build_html(videos):
 
   const lb = document.getElementById('lb');
   const lbIframe = document.getElementById('lbIframe');
+  const lbClose = document.getElementById('lbClose');
+  let focusBeforeVideo = null;
   function openLb(id) {{
-    lbIframe.src = `https://www.youtube.com/embed/${{id}}?autoplay=1`;
+    focusBeforeVideo = document.activeElement;
+    lbIframe.src = `https://www.youtube.com/embed/${{id}}?autoplay=1&playsinline=1`;
     lb.classList.add('open');
     document.body.style.overflow = 'hidden';
+    lbClose.focus({{ preventScroll: true }});
   }}
   function closeLb() {{
+    if (!lb.classList.contains('open')) return;
     lb.classList.remove('open');
     lbIframe.src = '';
     document.body.style.overflow = '';
+    if (focusBeforeVideo instanceof HTMLElement && focusBeforeVideo.isConnected) {{
+      focusBeforeVideo.focus({{ preventScroll: true }});
+    }}
   }}
   cards.forEach(card => {{
     card.addEventListener('click', () => openLb(card.dataset.id));
   }});
-  document.getElementById('lbClose').addEventListener('click', closeLb);
+  lbClose.addEventListener('click', closeLb);
   lb.addEventListener('click', (e) => {{ if (e.target === lb) closeLb(); }});
   document.addEventListener('keydown', (e) => {{ if (e.key === 'Escape') closeLb(); }});
 </script>
