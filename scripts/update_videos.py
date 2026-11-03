@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = ROOT / "Video" / "index.html"
 HEADER = ROOT / "shared" / "site-header.html"
+THUMBNAIL_OVERRIDES = {"4yraTXqrCEw": "images/video-thumbs/4yraTXqrCEw.jpg"}
 
 PLAYLISTS = [
     {"id": "PLJlbT8Y-GAB4", "cat": "ad"},
@@ -46,9 +47,10 @@ def build_card(v):
     vid = html.escape(v["id"], quote=True)
     title = html.escape(v["title"])
     cat = html.escape(v["cat"], quote=True)
+    thumbnail = THUMBNAIL_OVERRIDES.get(vid, f"https://img.youtube.com/vi/{vid}/maxresdefault.jpg")
     return f'''      <div class="card" data-cat="{cat}" data-id="{vid}">
         <div class="card-thumb">
-          <img src="https://img.youtube.com/vi/{vid}/maxresdefault.jpg" alt="{title}" loading="lazy" />
+          <img src="{thumbnail}" alt="{title}" loading="lazy" />
           <div class="card-play"><div class="card-play-circle">&#9658;</div></div>
         </div>
         <div class="card-info">
